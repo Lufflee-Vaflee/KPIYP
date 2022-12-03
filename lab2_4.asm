@@ -250,8 +250,6 @@ main proc
     loop cycle_output;
 
     endl;
-    output_str string_buf;
-    endl;
 
 exit:
 

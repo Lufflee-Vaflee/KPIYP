@@ -9,7 +9,6 @@ name prog
     enter_num_msg_1         db "  Enter element [$";
     enter_num_msg_2         db "  ]:$";
     histogramm_msg          db "  Result histogramm:$";
-    histogramm_height_msg   db "  : $";
     last_line_start_msg     db "  "
 
     num_array               db 30 DUP(0);
@@ -62,6 +61,8 @@ name prog
         pop     AX;
 
     endm
+
+    
 
 
 
@@ -127,7 +128,8 @@ main proc
         push ax;
         call Unsigned16Num_output;
         pop ax;
-        output_str histogramm_height_msg;
+        mov dx, 3;
+        call setw;
         mov si, offset num_array;
         push cx;
         mov cl, num_array_size;
@@ -165,11 +167,21 @@ main proc
     jne histogramm_output_cycle;
 
 
+    xor cx, cx;
     mov cl, [num_array_size];
+    mov ax, 0;
+    mov dx, 4;
+    call setw;
+    xor ax, ax;
+    mov dx, 3;
     cycle_last_line_output:
 
+        push ax;
+        call Unsigned16Num_output;
+        pop ax;
+        call setw;
 
-
+        inc ax;
     loop cycle_last_line_output;
 
 
@@ -223,6 +235,7 @@ Unsigned16Input           proc;
         push    CX;
         push    DI;
         push    SI;
+        push    DX;
         
         xor     AX,     AX;
         xor     BX,     BX;
@@ -258,6 +271,7 @@ Unsigned16Input           proc;
         jmp     end_16SI;
 
         end_16SI:
+        pop     DX;
         pop     SI;
         pop     DI;
         pop     CX;
@@ -271,6 +285,7 @@ Setw                      proc;         ax - num, dx - length of field for num; 
     push BX;
     push AX;
     push DX;
+    push CX;
 
     xor bx, bx;
     mov cx, 10;
@@ -296,6 +311,7 @@ Setw                      proc;         ax - num, dx - length of field for num; 
 
     loop cycle_output_space_symbols;
 
+    pop CX;
     pop DX;
     pop AX;
     pop BX;
